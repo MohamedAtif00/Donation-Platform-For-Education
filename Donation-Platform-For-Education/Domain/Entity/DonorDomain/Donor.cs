@@ -5,16 +5,13 @@ namespace Donation_Platform_For_Education.Domain.Entity.DonorDomain
 {
     public class Donor : Entity<DonorId>
     {
-        private List<DonationHistory> _donationHistories;
 
         public Donor(DonorId id,string name) : base(id)
         {
+            this.name = name;
         }
 
         public string name { get;private set; }
-
-        [NotMapped]
-        public IReadOnlyCollection<DonationHistory> donationHistories => _donationHistories;
 
         public static Donor Create(string name)
         {

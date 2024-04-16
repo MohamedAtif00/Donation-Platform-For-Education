@@ -8,7 +8,9 @@ namespace Donation_Platform_For_Education.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IAdminService, AdminService>();
-
+            services.AddScoped<IDonorService, DonorService>();
+            services.AddScoped<IItemService, ItemService>();
+            services.AddScoped<IItemTypeService, ItemTypeService>();
 
             return services;
         }

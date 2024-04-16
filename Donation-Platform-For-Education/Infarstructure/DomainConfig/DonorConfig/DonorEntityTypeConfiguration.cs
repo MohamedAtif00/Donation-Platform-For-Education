@@ -12,8 +12,6 @@ namespace Donation_Platform_For_Education.Infarstructure.DomainConfig.DonorConfi
 
             builder.Property(x => x.Id).HasConversion(x =>x.value,x =>DonorId.Create(x));
 
-            builder.HasMany(x =>x.donationHistories).WithOne(x =>x.donor);
-
 
         }
 

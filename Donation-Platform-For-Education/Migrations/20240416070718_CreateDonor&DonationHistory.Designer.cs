@@ -4,6 +4,7 @@ using Donation_Platform_For_Education.Infarstructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Donation_Platform_For_Education.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240416070718_CreateDonor&DonationHistory")]
+    partial class CreateDonorDonationHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,6 +39,24 @@ namespace Donation_Platform_For_Education.Migrations
                     b.ToTable("admins");
                 });
 
+            modelBuilder.Entity("Donation_Platform_For_Education.Domain.Entity.DonorDomain.DonationHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("donorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("donorId");
+
+                    b.ToTable("donationHistories");
+                });
+
             modelBuilder.Entity("Donation_Platform_For_Education.Domain.Entity.DonorDomain.Donor", b =>
                 {
                     b.Property<Guid>("Id")
@@ -48,45 +69,6 @@ namespace Donation_Platform_For_Education.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("donors");
-                });
-
-            modelBuilder.Entity("Donation_Platform_For_Education.Domain.Entity.ItemDomain.Item", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DonationHistory")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("itemTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("itemTypeId");
-
-                    b.ToTable("items");
-                });
-
-            modelBuilder.Entity("Donation_Platform_For_Education.Domain.Entity.ItemTypeDomain.ItemType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("itemTypes");
                 });
 
             modelBuilder.Entity("Donation_Platform_For_Education.Domain.Entity.AdminDomain.Admin", b =>
@@ -114,15 +96,20 @@ namespace Donation_Platform_For_Education.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Donation_Platform_For_Education.Domain.Entity.ItemDomain.Item", b =>
+            modelBuilder.Entity("Donation_Platform_For_Education.Domain.Entity.DonorDomain.DonationHistory", b =>
                 {
-                    b.HasOne("Donation_Platform_For_Education.Domain.Entity.ItemTypeDomain.ItemType", "type")
-                        .WithMany()
-                        .HasForeignKey("itemTypeId")
+                    b.HasOne("Donation_Platform_For_Education.Domain.Entity.DonorDomain.Donor", "donor")
+                        .WithMany("donationHistories")
+                        .HasForeignKey("donorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("type");
+                    b.Navigation("donor");
+                });
+
+            modelBuilder.Entity("Donation_Platform_For_Education.Domain.Entity.DonorDomain.Donor", b =>
+                {
+                    b.Navigation("donationHistories");
                 });
 #pragma warning restore 612, 618
         }
