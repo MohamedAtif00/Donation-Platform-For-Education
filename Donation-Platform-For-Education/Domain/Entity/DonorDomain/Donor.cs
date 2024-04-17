@@ -6,7 +6,7 @@ namespace Donation_Platform_For_Education.Domain.Entity.DonorDomain
     public class Donor : Entity<DonorId>
     {
 
-        public Donor(DonorId id,string name) : base(id)
+        private Donor(DonorId id,string name) : base(id)
         {
             this.name = name;
         }

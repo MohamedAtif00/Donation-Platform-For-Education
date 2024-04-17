@@ -2,6 +2,7 @@
 using Donation_Platform_For_Education.Domain.Repository.DonorRepo;
 using Donation_Platform_For_Education.Domain.Repository.ItemRepo;
 using Donation_Platform_For_Education.Domain.Repository.ItemTypeRepo;
+using Donation_Platform_For_Education.Domain.Repository.RefreshTokenRepo;
 
 namespace Donation_Platform_For_Education.Domain.Abstarction
 {
@@ -11,6 +12,7 @@ namespace Donation_Platform_For_Education.Domain.Abstarction
         IDonorRepository DonorRepository { get; }
         IItemRepository ItemRepository { get; }
         IItemTypeRepository ItemTypeRepository { get; }
+        IRefreshTokenRepository RefreshTokenRepository { get; }
 
         Task<int> save();
     }

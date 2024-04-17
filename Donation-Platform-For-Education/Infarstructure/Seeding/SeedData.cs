@@ -1,47 +1,72 @@
 ﻿namespace Donation_Platform_For_Education.Infarstructure.Seeding
 {
+    using Donation_Platform_For_Education.Infarstructure.Data;
     using Microsoft.AspNetCore.Identity;
 
-    public class SeedData
+    public class IdentitySeedData
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
-
-        public SeedData(RoleManager<IdentityRole> roleManager)
+        public static async Task Initialize(ApplicationDbContext context,
+        UserManager<IdentityUser<Guid>> userManager,
+        RoleManager<IdentityRole<Guid>> roleManager)
         {
-            _roleManager = roleManager;
-        }
 
-        public async Task InitializeAsync()
-        {
-            // Seed custom roles (if needed)
-            await SeedRolesAsync();
-        }
+            context.Database.EnsureCreated();
 
-        private async Task SeedRolesAsync()
-        {
-            // Check if custom roles exist
-            if (!await _roleManager.RoleExistsAsync("Admin"))
+            string asdminRole = "Admin";
+            string StudentRole = "Student";
+            string DonorRole = "Donor";
+            string password4all = "P@$$w0rd";
+
+            if (await roleManager.FindByNameAsync(asdminRole) == null)
             {
-                // Create Admin role
-                var adminRole = new IdentityRole("Admin");
-                await _roleManager.CreateAsync(adminRole);
+                await roleManager.CreateAsync(new IdentityRole<Guid>(asdminRole));
             }
 
-            if (!await _roleManager.RoleExistsAsync("Donor"))
+            if (await roleManager.FindByNameAsync(StudentRole) == null)
             {
-                // Create Moderator role
-                var moderatorRole = new IdentityRole("Donor");
-                await _roleManager.CreateAsync(moderatorRole);
+                await roleManager.CreateAsync(new IdentityRole<Guid>(StudentRole));
             }
 
-            if (!await _roleManager.RoleExistsAsync("Student"))
+            if (await roleManager.FindByNameAsync(DonorRole) == null)
             {
-                // Create Moderator role
-                var moderatorRole = new IdentityRole("Student");
-                await _roleManager.CreateAsync(moderatorRole);
+                await roleManager.CreateAsync(new IdentityRole<Guid>(DonorRole));
             }
-            // Add other custom roles as needed
+
+            if (await userManager.FindByNameAsync("aa@aa.aa") == null)
+            {
+                var user = new IdentityUser<Guid>
+                {
+                    UserName = "aa@aa.aa",
+                    Email = "aa@aa.aa",
+                    PhoneNumber = "6902341234"
+                };
+
+                var result = await userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    await userManager.AddPasswordAsync(user, password4all);
+                    await userManager.AddToRoleAsync(user, asdminRole);
+                }
+            }
+
+            if (await userManager.FindByNameAsync("mm@mm.mm") == null)
+            {
+                var user = new IdentityUser<Guid>
+                {
+                    UserName = "mm@mm.mm",
+                    Email = "mm@mm.mm",
+                    PhoneNumber = "1112223333"
+                };
+
+                var result = await userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    await userManager.AddPasswordAsync(user, password4all);
+                    await userManager.AddToRoleAsync(user, StudentRole);
+                }
+            }
         }
     }
+
 
 }

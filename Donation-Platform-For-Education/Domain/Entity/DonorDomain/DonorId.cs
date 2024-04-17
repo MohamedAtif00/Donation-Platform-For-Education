@@ -4,7 +4,7 @@ namespace Donation_Platform_For_Education.Domain.Entity.DonorDomain
 {
     public class DonorId : ValueObjectId
     {
-        protected DonorId(Guid id) : base(id)
+        private DonorId(Guid id) : base(id)
         {
         }
 

@@ -1,9 +1,11 @@
 ﻿using Ardalis.Result;
 using Donation_Platform_For_Education.Application.Abstraction.ServiceAbs;
+using Donation_Platform_For_Education.Application.DTOs.Item.response;
 using Donation_Platform_For_Education.Domain.Abstarction;
 using Donation_Platform_For_Education.Domain.Entity.DonorDomain;
 using Donation_Platform_For_Education.Domain.Entity.ItemDomain;
 using Donation_Platform_For_Education.Domain.Entity.ItemTypeDomain;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Donation_Platform_For_Education.Application.Service
 {
@@ -22,6 +24,18 @@ namespace Donation_Platform_For_Education.Application.Service
             try
             {
                 var items = await _unitOfWork.ItemRepository.GetAll();
+
+                List<AllItemsResponse> allItems;
+
+                //foreach (var item in items)
+                //{
+                //    if (item.bytes != null)
+                //    {
+                //        IFormFile file = await File.WriteAllBytesAsync(item.name,item.bytes);
+                //    }
+
+                //    allItems.Add(new AllItemsResponse(item.Id.value,item.itemTypeId.value,item.donorId,item.name,item.description,item.quantity,));
+                //}
 
                 if (items == null) return Result.Error("error");
 
@@ -50,11 +64,19 @@ namespace Donation_Platform_For_Education.Application.Service
             }
         }
 
-        public async Task<Result<Item>> Create(Guid itemTypeId,string name, string description, int? quantity)
+        public async Task<Result<Item>> Create(Guid itemTypeId,Guid donorId,string name, string description, int? quantity, IFormFile file,IFormFile image)
         {
             try
             {
-                var item = await _unitOfWork.ItemRepository.Add(Item.Create(ItemTypeId.Create(itemTypeId),name, description, quantity));
+                byte[]? byteFile = null;
+                byte[]? byteImage = null;
+                if (file != null)
+                    byteFile = ConvertIFormFileToByteArray(file);
+
+                if (image != null)
+                    byteImage = ConvertIFormFileToByteArray(image);
+
+                var item = await _unitOfWork.ItemRepository.Add(Item.Create(ItemTypeId.Create(itemTypeId),donorId,name, description, quantity?? null,byteFile,byteImage));
 
                 if (item == null) return Result.Error("error");
 
@@ -134,6 +156,20 @@ namespace Donation_Platform_For_Education.Application.Service
             {
                 return Result.CriticalError("system error");
             }
+        }
+
+        private byte[] ConvertIFormFileToByteArray(IFormFile file)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                file.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
+        public static void ConvertByteArrayToPdf(byte[] data, string outputPath)
+        {
+            var file = File.WriteAllBytesAsync(outputPath,data);
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Donation_Platform_For_Education.Infarstructure.DomainConfig.ItemTypeCo
             builder.HasKey(x => x.Id);
             builder.Property(x =>x.Id).HasConversion(x =>x.value ,x=>ItemTypeId.Create(x));
 
+            
         }
     }
 }

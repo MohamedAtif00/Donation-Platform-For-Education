@@ -4,6 +4,7 @@ using Donation_Platform_For_Education.Infarstructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Donation_Platform_For_Education.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240417125616_AddMaterialImage")]
+    partial class AddMaterialImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -351,7 +354,7 @@ namespace Donation_Platform_For_Education.Migrations
 
             modelBuilder.Entity("Donation_Platform_For_Education.Domain.Entity.ItemDomain.Item", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser<System.Guid>", "Donor")
+                    b.HasOne("Donation_Platform_For_Education.Domain.Entity.DonorDomain.Donor", "Donor")
                         .WithMany()
                         .HasForeignKey("donorId")
                         .OnDelete(DeleteBehavior.Cascade)

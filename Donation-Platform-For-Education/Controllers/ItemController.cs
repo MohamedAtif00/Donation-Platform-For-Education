@@ -24,6 +24,8 @@ namespace Donation_Platform_For_Education.Controllers
         {
             var result = await _itemService.GetAll();
 
+
+
             return Ok(result);
         }
 
@@ -38,10 +40,10 @@ namespace Donation_Platform_For_Education.Controllers
 
         // POST api/<ItemController>
         [HttpPost("CreateNewItem")]
-        public async Task<IActionResult> Post([FromBody] CreateItemRequest value)
+        public async Task<IActionResult> Post([FromForm] CreateItemRequest value)
         {
 
-            var result = await _itemService.Create(value.itemTypeId,value.name,value.description,value.quantity);
+            var result = await _itemService.Create(value.itemTypeId,value.userId,value.name,value.description,value.quantity??null,value.file,null);
 
             return Ok(result);
         }
