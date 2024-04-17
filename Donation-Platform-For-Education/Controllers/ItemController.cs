@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Donation_Platform_For_Education.Controllers
 {
-    public class ItemController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ItemController : ControllerBase
     {
         private readonly IItemService _itemService;
 

@@ -1,83 +1,67 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Donation_Platform_For_Education.Application.Abstraction.ServiceAbs;
+using Donation_Platform_For_Education.Application.DTOs.Item.Request;
+using Donation_Platform_For_Education.Application.DTOs.ItemType.Request;
+using Donation_Platform_For_Education.Application.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Donation_Platform_For_Education.Controllers
 {
-    public class ItemTypeController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ItemTypeController : ControllerBase
     {
-        // GET: ItemTypeController
-        public ActionResult Index()
+        private readonly IItemTypeService _itemTypeService;
+
+        public ItemTypeController(IItemTypeService itemTypeService)
         {
-            return View();
+            _itemTypeService = itemTypeService;
         }
 
-        // GET: ItemTypeController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> Get()
         {
-            return View();
+            var result = await _itemTypeService.GetAll();
+
+            return Ok(result);
         }
 
-        // GET: ItemTypeController/Create
-        public ActionResult Create()
+        // GET api/<ItemController>/5
+        [HttpGet("GetSingleItemType/{id}")]
+        public async Task<IActionResult> Get(Guid id)
         {
-            return View();
+            var result = await _itemTypeService.GetSingleItem(id);
+
+            return Ok(result);
         }
 
-        // POST: ItemTypeController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        // POST api/<ItemController>
+        [HttpPost("CreateNewItemType")]
+        public async Task<IActionResult> Post([FromBody] CreateItemTypeRequest value)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+
+            var result = await _itemTypeService.Create(value.name);
+
+            return Ok(result);
         }
 
-        // GET: ItemTypeController/Edit/5
-        public ActionResult Edit(int id)
+        // PUT api/<ItemController>/5
+        [HttpPut("UpdateItemType/{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateItemTypeRequest value)
         {
-            return View();
+            var result = await _itemTypeService.Update(id,value.name);
+
+            return Ok(result);
         }
 
-        // POST: ItemTypeController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: ItemTypeController/Delete/5
-        public ActionResult Delete(int id)
+        // DELETE api/<ItemController>/5
+        [HttpDelete("DeleteItemType/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            return View();
-        }
+            var result = await _itemTypeService.Delete(id);
 
-        // POST: ItemTypeController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return Ok(result);
         }
     }
 }

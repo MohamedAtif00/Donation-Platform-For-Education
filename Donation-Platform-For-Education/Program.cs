@@ -24,6 +24,8 @@ namespace Donation_Platform_For_Education
 
 
 
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -38,6 +40,8 @@ namespace Donation_Platform_For_Education
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

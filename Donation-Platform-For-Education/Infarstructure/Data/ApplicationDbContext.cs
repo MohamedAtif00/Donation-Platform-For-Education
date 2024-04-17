@@ -3,11 +3,12 @@ using Donation_Platform_For_Education.Domain.Entity.DonorDomain;
 using Donation_Platform_For_Education.Domain.Entity.ItemDomain;
 using Donation_Platform_For_Education.Domain.Entity.ItemTypeDomain;
 using Donation_Platform_For_Education.Infarstructure.DomainConfig.AdminConfig;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Donation_Platform_For_Education.Infarstructure.Data
 {
-    public class ApplicationDbContext : DbContext 
+    public class ApplicationDbContext : IdentityDbContext 
     {
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options) 
