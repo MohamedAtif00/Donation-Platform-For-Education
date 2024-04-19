@@ -44,7 +44,7 @@ namespace Donation_Platform_For_Education.Application.Service
                     return Result.Error("Username is required");
                 }
                 var existingUser = await _userManager.FindByNameAsync(Username);
-                if (existingUser != null)
+                if (existingUser != null && _userManager.GetRolesAsync(existingUser).Result[0] == Role)
                 {
                     return Result.Error("Username is already in use");
                 }
@@ -64,9 +64,30 @@ namespace Donation_Platform_For_Education.Application.Service
                     {
                         return Result.Error($"Role '{Role}' does not exist");
                     }
+                    IdentityResult addToRoleResult = new();
 
-                    var addToRoleResult = await _userManager.AddToRoleAsync(newUser, Role);
-                    if (!addToRoleResult.Succeeded)
+                    var existingUserRoles = await _userManager.GetRolesAsync(newUser);
+                    var existingUserRole = existingUserRoles.FirstOrDefault();
+
+                    if (existingUserRole == null)
+                    {
+                        addToRoleResult = await _userManager.AddToRoleAsync(newUser, Role);
+                    }
+                    else if (existingUserRole != Role)
+                    {
+                        addToRoleResult = await _userManager.AddToRoleAsync(newUser, Role);
+                    }
+                    else
+                    {
+                        addToRoleResult = IdentityResult.Failed();
+                    }
+
+
+                    //if (_userManager.GetRolesAsync(existingUser).Result[0] != Role || _userManager.GetRolesAsync(existingUser).Result[0] == null)
+                    //    addToRoleResult = await _userManager.AddToRoleAsync(newUser, Role);
+
+
+                    if (!addToRoleResult.Succeeded && addToRoleResult != null)
                     {
                         return Result.Error($"Failed to assign role '{Role}' to the user");
                     }
@@ -117,10 +138,13 @@ namespace Donation_Platform_For_Education.Application.Service
                 {
                     return Result.NotFound("username is not exist");
                 }
+                var userRole = await _userManager.GetRolesAsync(user);
+
+                if (userRole == null || userRole[0] != role) { return Result.Error($"this user doesn't has {role} role"); }
 
 
                 //var user = await _userManager.FindByNameAsync(loginDto.Username);
-                if (user == null) return Result.NotFound("this user is not exist");
+                //if (user == null) return Result.NotFound("this user is not exist");
                 var locked = await _userManager.IsLockedOutAsync(user);
                 if (locked) return Result.Error("Account lockedout");
                 var passwordValid = await _userManager.CheckPasswordAsync(user, password);

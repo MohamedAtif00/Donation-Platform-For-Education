@@ -12,6 +12,7 @@ namespace Donation_Platform_For_Education.Application
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IItemTypeService, ItemTypeService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IRequestService, RequestService>();
 
             return services;
         }

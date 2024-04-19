@@ -15,6 +15,7 @@ namespace Donation_Platform_For_Education.Infarstructure.DomainConfig.ItemConfig
 
             builder.Property(x =>x.itemTypeId).HasConversion(x =>x.value,x =>ItemTypeId.Create(x));
 
+            
 
         }
     }

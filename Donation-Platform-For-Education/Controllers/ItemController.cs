@@ -3,6 +3,7 @@ using Donation_Platform_For_Education.Application.DTOs.Donor.Request;
 using Donation_Platform_For_Education.Application.DTOs.Item.Request;
 using Donation_Platform_For_Education.Domain.Entity.ItemDomain;
 using Donation_Platform_For_Education.Domain.Entity.ItemTypeDomain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,13 +38,24 @@ namespace Donation_Platform_For_Education.Controllers
 
             return Ok(result);
         }
+        [HttpGet("GetPdf/{itemId}")]
+        public async Task<IActionResult> GetFile(Guid itemId)
+        {
+            var result = await _itemService.GetFile(itemId);
+
+            if (result.Errors.Count() != 0) return NotFound("this file is not exist");
+
+            return File(result.Value.bytes,result.Value.contentType,result.Value.fileName);
+            
+        }
 
         // POST api/<ItemController>
         [HttpPost("CreateNewItem")]
+        [Authorize(Roles = "Donor")]
         public async Task<IActionResult> Post([FromForm] CreateItemRequest value)
         {
 
-            var result = await _itemService.Create(value.itemTypeId,value.userId,value.name,value.description,value.quantity??null,value.file,null);
+            var result = await _itemService.Create(value.itemTypeId,value.userId,value.name,value.description,value.quantity,value.file,value.image);
 
             return Ok(result);
         }

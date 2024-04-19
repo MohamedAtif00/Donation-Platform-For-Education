@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Donation_Platform_For_Education.Domain.Repository.RefreshTokenRepo;
 using Donation_Platform_For_Education.Application.DTOs.JwtSetting;
 using Microsoft.IdentityModel.Tokens;
+using Donation_Platform_For_Education.Domain.Repository.RequestRepo;
 
 namespace Donation_Platform_For_Education.Infarstructure
 {
@@ -82,6 +83,7 @@ namespace Donation_Platform_For_Education.Infarstructure
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IItemTypeRepository, ItemTypeRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IRequestRepository,RequestRepository>();
 
             return services;
         }

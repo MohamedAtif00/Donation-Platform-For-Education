@@ -3,6 +3,7 @@ using Donation_Platform_For_Education.Domain.Entity.DonorDomain;
 using Donation_Platform_For_Education.Domain.Entity.ItemDomain;
 using Donation_Platform_For_Education.Domain.Entity.ItemTypeDomain;
 using Donation_Platform_For_Education.Domain.Entity.RefreshTokenDomain;
+using Donation_Platform_For_Education.Domain.Entity.RequestDomain;
 using Donation_Platform_For_Education.Infarstructure.DomainConfig.AdminConfig;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace Donation_Platform_For_Education.Infarstructure.Data
         public DbSet<Item> items { get; set; }
         public DbSet<ItemType> itemTypes { get; set; }
         public DbSet<RefreshToken> refreshTokens { get; set; }
+        public DbSet<Request> Requests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

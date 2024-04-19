@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using Donation_Platform_For_Education.Application.Abstraction.ServiceAbs;
+using Donation_Platform_For_Education.Application.DTOs.Item;
 using Donation_Platform_For_Education.Application.DTOs.Item.response;
 using Donation_Platform_For_Education.Domain.Abstarction;
 using Donation_Platform_For_Education.Domain.Entity.DonorDomain;
@@ -19,33 +20,48 @@ namespace Donation_Platform_For_Education.Application.Service
         }
 
 
-        public async Task<Result<List<Item>>> GetAll()
+        public async Task<Result<List<AllItemsResponse>>> GetAll()
         {
             try
             {
                 var items = await _unitOfWork.ItemRepository.GetAll();
 
-                List<AllItemsResponse> allItems;
+                List<AllItemsResponse> allItems = new();
 
-                //foreach (var item in items)
-                //{
-                //    if (item.bytes != null)
-                //    {
-                //        IFormFile file = await File.WriteAllBytesAsync(item.name,item.bytes);
-                //    }
+                foreach (var item in items)
+                {
+                    FileResponse? file = null;
+                    FileResponse? image = null;
 
-                //    allItems.Add(new AllItemsResponse(item.Id.value,item.itemTypeId.value,item.donorId,item.name,item.description,item.quantity,));
-                //}
+                    AllItemsResponse allItem;
 
-                if (items == null) return Result.Error("error");
+                    if (item.bytes != null)
+                    {
+                        file = new FileResponse(item.bytes, item.name,"application/pdf");
+                    }
 
-                return Result.Success(items);
+                    if (item.image != null)
+                    {
+                        image = new FileResponse(item.image,item.name,"image/jpeg");
+                    }
+
+                    allItems.Add(new AllItemsResponse(item.Id.value,
+                                                       item.itemTypeId.value,
+                                                       item.donorId,
+                                                       item.name,
+                                                       item.description,
+                                                       item.quantity,
+                                                       image));
+                }
+
+                return Result.Success(allItems);
             }
             catch (Exception ex)
             {
-                return Result.CriticalError("system error");
+                return Result.CriticalError("System error");
             }
         }
+
 
         public async Task<Result<Item>> GetSingleItem(Guid id)
         {
@@ -64,19 +80,37 @@ namespace Donation_Platform_For_Education.Application.Service
             }
         }
 
-        public async Task<Result<Item>> Create(Guid itemTypeId,Guid donorId,string name, string description, int? quantity, IFormFile file,IFormFile image)
+        public async Task<Result<FileDownloadResponse>> GetFile(Guid itemId)
+        {
+            try { 
+                 var item = await _unitOfWork.ItemRepository.GetById(ItemId.Create(itemId));
+
+                if (item == null) return Result.Error("this file is not exist");
+
+                var response = new FileDownloadResponse(item.bytes,item.name,"application/pdf");
+
+                return Result.Success(response);    
+            }catch (Exception ex)
+            {
+
+                return Result.CriticalError("system Error");
+            }
+        }
+
+        public async Task<Result<Item>> Create(Guid itemTypeId,Guid donorId,string name, string description, int? quantity, IFormFile? file,IFormFile? image)
         {
             try
             {
                 byte[]? byteFile = null;
                 byte[]? byteImage = null;
+
                 if (file != null)
                     byteFile = ConvertIFormFileToByteArray(file);
 
                 if (image != null)
                     byteImage = ConvertIFormFileToByteArray(image);
 
-                var item = await _unitOfWork.ItemRepository.Add(Item.Create(ItemTypeId.Create(itemTypeId),donorId,name, description, quantity?? null,byteFile,byteImage));
+                var item = await _unitOfWork.ItemRepository.Add(Item.Create(ItemTypeId.Create(itemTypeId),donorId,name, description, quantity,byteFile,byteImage));
 
                 if (item == null) return Result.Error("error");
 
@@ -167,9 +201,6 @@ namespace Donation_Platform_For_Education.Application.Service
             }
         }
 
-        public static void ConvertByteArrayToPdf(byte[] data, string outputPath)
-        {
-            var file = File.WriteAllBytesAsync(outputPath,data);
-        }
+        
     }
 }

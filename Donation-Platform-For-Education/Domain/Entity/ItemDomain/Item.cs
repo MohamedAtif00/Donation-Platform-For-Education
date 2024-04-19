@@ -1,12 +1,15 @@
 ﻿using Donation_Platform_For_Education.Domain.Abstarction;
 using Donation_Platform_For_Education.Domain.Entity.DonorDomain;
 using Donation_Platform_For_Education.Domain.Entity.ItemTypeDomain;
+using Donation_Platform_For_Education.Domain.Entity.RequestDomain;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Donation_Platform_For_Education.Domain.Entity.ItemDomain
 {
     public class Item : Entity<ItemId>
     {
+        private readonly List<Request> _request = new();
         public Item(ItemId id, ItemTypeId itemTypeId, string name, string description, int? quantity, byte[]? bytes, Guid donorId, byte[]? image) : base(id)
         {
             this.name = name;
@@ -27,12 +30,20 @@ namespace Donation_Platform_For_Education.Domain.Entity.ItemDomain
         public ItemType type { get; private set; }
         public ItemTypeId itemTypeId { get; private set; }
 
+        [NotMapped]
+        public IReadOnlyCollection<Request> requests => _request;
+
         public IdentityUser<Guid> Donor { get; private set; }
         public Guid donorId { get; private set; }
 
         public static Item Create(ItemTypeId itemTypeId,Guid donorId,string name,string description,int? quantity, byte[]? bytes, byte[]? image)
         {
             return new(ItemId.CreateUnique(),itemTypeId,name,description,quantity,bytes,donorId,image);
+        }
+
+        public static Item CreateExist(Guid id, Guid itemTypeId, string name, string description, int? quantity, Guid donorId, byte[]? bytes = null, byte[]? image = null)
+        {
+            return new(ItemId.Create(id), ItemTypeId.Create(itemTypeId), name, description, quantity, bytes, donorId, image);
         }
 
         public void UpdateQuantity(int quantity)
