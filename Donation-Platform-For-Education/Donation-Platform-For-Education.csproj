@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Application\Authentication\" />
-    <Folder Include="Domain\Entity\DonorDomain\Rules\" />
   </ItemGroup>
 
 </Project>
