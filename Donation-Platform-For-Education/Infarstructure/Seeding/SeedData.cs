@@ -15,7 +15,7 @@
             string asdminRole = "Admin";
             string StudentRole = "Student";
             string DonorRole = "Donor";
-            string password4all = "P@$$w0rd";
+            string password4all = "123456789";
 
             if (await roleManager.FindByNameAsync(asdminRole) == null)
             {
@@ -32,13 +32,13 @@
                 await roleManager.CreateAsync(new IdentityRole<Guid>(DonorRole));
             }
 
-            if (await userManager.FindByNameAsync("aa@aa.aa") == null)
+            if (await userManager.FindByNameAsync("admin") == null)
             {
                 var user = new IdentityUser<Guid>
                 {
-                    UserName = "aa@aa.aa",
-                    Email = "aa@aa.aa",
-                    PhoneNumber = "6902341234"
+                    UserName = "admin",
+                    Email = "admin",
+                    PhoneNumber = "1242235345"
                 };
 
                 var result = await userManager.CreateAsync(user);
@@ -49,22 +49,22 @@
                 }
             }
 
-            if (await userManager.FindByNameAsync("mm@mm.mm") == null)
-            {
-                var user = new IdentityUser<Guid>
-                {
-                    UserName = "mm@mm.mm",
-                    Email = "mm@mm.mm",
-                    PhoneNumber = "1112223333"
-                };
+            //if (await userManager.FindByNameAsync("mm@mm.mm") == null)
+            //{
+            //    var user = new IdentityUser<Guid>
+            //    {
+            //        UserName = "mm@mm.mm",
+            //        Email = "mm@mm.mm",
+            //        PhoneNumber = "1112223333"
+            //    };
 
-                var result = await userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    await userManager.AddPasswordAsync(user, password4all);
-                    await userManager.AddToRoleAsync(user, StudentRole);
-                }
-            }
+            //    var result = await userManager.CreateAsync(user);
+            //    if (result.Succeeded)
+            //    {
+            //        await userManager.AddPasswordAsync(user, password4all);
+            //        await userManager.AddToRoleAsync(user, StudentRole);
+            //    }
+            //}
         }
     }
 

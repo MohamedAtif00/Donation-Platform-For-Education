@@ -10,7 +10,8 @@ namespace Donation_Platform_For_Education.Application.Abstraction.ServiceAbs
         Task<Result> Delete(Guid id);
         Task<Result<List<AllItemsResponse>>> GetAll();
         Task<Result<FileDownloadResponse>> GetFile(Guid itemId);
-        Task<Result<Item>> GetSingleItem(Guid id);
+        Task<Result<List<AllItemsResponse>>> GetItemsForType(Guid itemTypeId);
+        Task<Result<GetSingleItemResponse>> GetSingleItem(Guid id);
         Task<Result<Item>> UpdateInfo(Guid itemId, string name,string description);
         Task<Result<Item>> UpdateQuantity(Guid itemId, int quantity);
     }

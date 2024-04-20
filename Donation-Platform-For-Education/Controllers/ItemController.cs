@@ -1,10 +1,12 @@
-﻿using Donation_Platform_For_Education.Application.Abstraction.ServiceAbs;
+﻿using Ardalis.Result;
+using Donation_Platform_For_Education.Application.Abstraction.ServiceAbs;
 using Donation_Platform_For_Education.Application.DTOs.Donor.Request;
 using Donation_Platform_For_Education.Application.DTOs.Item.Request;
 using Donation_Platform_For_Education.Domain.Entity.ItemDomain;
 using Donation_Platform_For_Education.Domain.Entity.ItemTypeDomain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Donation_Platform_For_Education.Controllers
@@ -14,10 +16,13 @@ namespace Donation_Platform_For_Education.Controllers
     public class ItemController : ControllerBase
     {
         private readonly IItemService _itemService;
+        private readonly UserManager<IdentityUser<Guid>> _userManager;
 
-        public ItemController(IItemService itemService)
+
+        public ItemController(IItemService itemService, UserManager<IdentityUser<Guid>> userManager)
         {
             _itemService = itemService;
+            _userManager = userManager;
         }
 
         [HttpGet("GetAll")]
@@ -29,14 +34,30 @@ namespace Donation_Platform_For_Education.Controllers
 
             return Ok(result);
         }
+        [HttpGet("GetItemsForType/{itemTypeId}")]
+        public async Task<IActionResult> GetForType(Guid itemTypeId)
+        {
+            var result = await _itemService.GetItemsForType(itemTypeId);
+
+            return Ok(result);
+        }
+
 
         // GET api/<ItemController>/5
         [HttpGet("GetSingleItem/{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var result = await _itemService.GetSingleItem(id);
+            var result = _itemService.GetSingleItem(id).Result.Value;
 
-            return Ok(result);
+            if (result == null) return Ok(result);
+
+            var userId = result.donorId.ToString();
+            IdentityUser<Guid> user = await _userManager.FindByIdAsync(userId);
+
+
+            if (user == null) return NotFound();
+
+            return Ok(Result.Success(new {result.itemId,result.itemTypeId,result.donorId,result.donationHistory,result.name,result.description,result.quantity,result.bytes,result.image,user.UserName }));
         }
         [HttpGet("GetPdf/{itemId}")]
         public async Task<IActionResult> GetFile(Guid itemId)

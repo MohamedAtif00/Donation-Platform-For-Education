@@ -1,5 +1,7 @@
-﻿using Donation_Platform_For_Education.Application.Abstraction.ServiceAbs;
-using Donation_Platform_For_Education.Application.DTOs.Request;
+﻿using Ardalis.Result;
+using Donation_Platform_For_Education.Application.Abstraction.ServiceAbs;
+using Donation_Platform_For_Education.Application.DTOs.Request.Request;
+using Donation_Platform_For_Education.Application.DTOs.Request.Response;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -25,6 +27,13 @@ namespace Donation_Platform_For_Education.Controllers
 
             return Ok(result);
         }
+        [HttpPost("CheckRequestExist")]
+        public async Task<IActionResult> CheckRequestExist([FromBody] CheckRequestExistRequest request)
+        {
+            var result = await _requestService.CheckRequestExist(request.userId,request.itemId);
+
+            return Ok(result);
+        }
 
         // GET api/<RequestController>/5
         //[HttpGet("{id}")]
@@ -39,8 +48,16 @@ namespace Donation_Platform_For_Education.Controllers
         {
             var result = await _requestService.Create(request.userId,request.itemId);
 
+            if (result.Value != null)
+            {
+                return Ok(Result.Success(new { result.Value.Id, result.Value.userId, result.Value.itemId.value }));
+
+            }
             return Ok(result);
+
         }
+
+
 
         //// PUT api/<RequestController>/5
         //[HttpPut("{id}")]

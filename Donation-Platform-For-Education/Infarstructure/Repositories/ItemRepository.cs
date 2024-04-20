@@ -1,4 +1,5 @@
 ﻿using Donation_Platform_For_Education.Domain.Entity.ItemDomain;
+using Donation_Platform_For_Education.Domain.Entity.ItemTypeDomain;
 using Donation_Platform_For_Education.Domain.Repository.ItemRepo;
 using Donation_Platform_For_Education.Infarstructure.Data;
 using Donation_Platform_For_Education.Infarstructure.DomainConfig;
@@ -17,6 +18,12 @@ namespace Donation_Platform_For_Education.Infarstructure.Repositories
             var items = await _context.items
                                     .Select(x => Item.CreateExist(x.Id.value,x.itemTypeId.value,x.name,x.description,x.quantity,x.donorId,null,x.image)).ToListAsync();
             return items;
+        }
+
+        public async Task<List<Item>> GetItemsForType(ItemTypeId itemTypeId)
+        {
+            var result = await _context.items.Where(x => x.itemTypeId == itemTypeId).ToListAsync();
+            return result;
         }
 
     }
